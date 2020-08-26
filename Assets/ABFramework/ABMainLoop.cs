@@ -6,11 +6,32 @@ public class ABMainLoop : MonoBehaviour
 {
 	public ABPawnManager manager;
 
-    void Start() {
-    	manager.Init();
-    }
+	public ABMenuPause pauseMenu;
 
-    void Update() {
-    	manager.Tick(Time.deltaTime);
-    }
+
+	bool paused = false;
+	ABInput input;
+
+	void Start() {
+		manager.Init();
+		input = new ABInput();
+	}
+
+	void Update() {
+		if (paused) {
+
+		} else {
+			manager.Tick(Time.deltaTime);
+
+			if (input.Consume(KeyCode.P)) {
+				StartCoroutine(PauseRoutine());
+			}
+		}
+	}
+
+	IEnumerator PauseRoutine() {
+		paused = true;
+		yield return pauseMenu.Run(input);
+		paused = false;
+	}
 }
